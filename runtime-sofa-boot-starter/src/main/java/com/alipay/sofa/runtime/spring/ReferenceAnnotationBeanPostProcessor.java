@@ -20,6 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
+import com.alipay.sofa.runtime.SofaRuntimeProperties;
+import com.alipay.sofa.runtime.service.binding.JvmBinding.XmlConstants;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
@@ -34,7 +36,6 @@ import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.annotation.SofaReference;
 import com.alipay.sofa.runtime.api.binding.BindingType;
 import com.alipay.sofa.runtime.model.InterfaceMode;
-import com.alipay.sofa.runtime.service.binding.JvmBinding;
 import com.alipay.sofa.runtime.service.component.Reference;
 import com.alipay.sofa.runtime.service.component.impl.ReferenceImpl;
 import com.alipay.sofa.runtime.service.helper.ReferenceRegisterHelper;
@@ -52,12 +53,12 @@ import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
  * @author xuanbei 18/5/9
  */
 public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
-    private final PlaceHolderBinder binder = new DefaultPlaceHolderBinder();
-    private ApplicationContext      applicationContext;
-    private SofaRuntimeContext      sofaRuntimeContext;
-    private BindingAdapterFactory   bindingAdapterFactory;
-    private BindingConverterFactory bindingConverterFactory;
-    private Environment             environment;
+    private final PlaceHolderBinder       binder = new DefaultPlaceHolderBinder();
+    private       ApplicationContext      applicationContext;
+    private       SofaRuntimeContext      sofaRuntimeContext;
+    private       BindingAdapterFactory   bindingAdapterFactory;
+    private       BindingConverterFactory bindingConverterFactory;
+    private       Environment             environment;
 
     /**
      * To construct a ReferenceAnnotationBeanPostProcessor via a Spring Bean
@@ -80,7 +81,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
 
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName)
-                                                                               throws BeansException {
+            throws BeansException {
         processSofaReference(bean);
         return bean;
     }
@@ -94,7 +95,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
             @SuppressWarnings("unchecked")
             public void doWith(Field field) throws IllegalArgumentException, IllegalAccessException {
                 AnnotationWrapperBuilder<SofaReference> builder = AnnotationWrapperBuilder.wrap(
-                    field.getAnnotation(SofaReference.class)).withBinder(binder);
+                        field.getAnnotation(SofaReference.class)).withBinder(binder);
                 SofaReference sofaReferenceAnnotation = builder.build();
 
                 if (sofaReferenceAnnotation == null) {
@@ -106,7 +107,14 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
                     interfaceType = field.getType();
                 }
 
-                Object proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);
+                Object proxy;
+                if (XmlConstants.BINDING_TYPE.equals(sofaReferenceAnnotation.binding().bindingType()) &&
+                        SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader())) {
+                    proxy = applicationContext.getBean(interfaceType);
+                } else {
+                    proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);
+                }
+
                 ReflectionUtils.makeAccessible(field);
                 ReflectionUtils.setField(field, bean, proxy);
             }
@@ -115,7 +123,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
             @Override
             public boolean matches(Field field) {
                 return !Modifier.isStatic(field.getModifiers())
-                       && field.isAnnotationPresent(SofaReference.class);
+                        && field.isAnnotationPresent(SofaReference.class);
             }
         });
 
@@ -123,17 +131,17 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
             @Override
             @SuppressWarnings("unchecked")
             public void doWith(Method method) throws IllegalArgumentException,
-                                             IllegalAccessException {
+                    IllegalAccessException {
                 Class[] parameterTypes = method.getParameterTypes();
                 Assert.isTrue(parameterTypes.length == 1,
-                    "method should have one and only one parameter.");
+                        "method should have one and only one parameter.");
 
                 SofaReference sofaReferenceAnnotation = method.getAnnotation(SofaReference.class);
                 if (sofaReferenceAnnotation == null) {
                     return;
                 }
                 AnnotationWrapperBuilder<SofaReference> builder = AnnotationWrapperBuilder.wrap(
-                    sofaReferenceAnnotation).withBinder(binder);
+                        sofaReferenceAnnotation).withBinder(binder);
                 sofaReferenceAnnotation = builder.build();
 
                 Class<?> interfaceType = sofaReferenceAnnotation.interfaceType();
@@ -141,7 +149,14 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
                     interfaceType = parameterTypes[0];
                 }
 
-                Object proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);
+                Object proxy;
+                if (XmlConstants.BINDING_TYPE.equals(sofaReferenceAnnotation.binding().bindingType()) &&
+                        SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader())) {
+                    proxy = applicationContext.getBean(interfaceType);
+                } else {
+                    proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);
+                }
+
                 ReflectionUtils.invokeMethod(method, bean, proxy);
             }
         }, new ReflectionUtils.MethodFilter() {
@@ -155,12 +170,12 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
     private Object createReferenceProxy(SofaReference sofaReferenceAnnotation,
                                         Class<?> interfaceType) {
         Reference reference = new ReferenceImpl(sofaReferenceAnnotation.uniqueId(), interfaceType,
-            InterfaceMode.annotation, sofaReferenceAnnotation.jvmFirst());
+                InterfaceMode.annotation, sofaReferenceAnnotation.jvmFirst());
         BindingConverter bindingConverter = bindingConverterFactory
-            .getBindingConverter(new BindingType(sofaReferenceAnnotation.binding().bindingType()));
+                .getBindingConverter(new BindingType(sofaReferenceAnnotation.binding().bindingType()));
         if (bindingConverter == null) {
             throw new ServiceRuntimeException("Can not found binding converter for binding type "
-                                              + sofaReferenceAnnotation.binding().bindingType());
+                    + sofaReferenceAnnotation.binding().bindingType());
         }
 
         BindingConverterContext bindingConverterContext = new BindingConverterContext();
@@ -169,10 +184,10 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
         bindingConverterContext.setAppName(sofaRuntimeContext.getAppName());
         bindingConverterContext.setAppClassLoader(sofaRuntimeContext.getAppClassLoader());
         Binding binding = bindingConverter.convert(sofaReferenceAnnotation,
-            sofaReferenceAnnotation.binding(), bindingConverterContext);
+                sofaReferenceAnnotation.binding(), bindingConverterContext);
         reference.addBinding(binding);
         return ReferenceRegisterHelper.registerReference(reference, bindingAdapterFactory,
-            sofaRuntimeContext);
+                sofaRuntimeContext);
     }
 
     @Override

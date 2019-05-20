@@ -298,7 +298,7 @@ public class ServiceBeanFactoryPostProcessor implements BeanFactoryPostProcessor
         if (!beanFactory.containsBeanDefinition(serviceId)) {
             builder.getRawBeanDefinition().setScope(beanDefinition.getScope());
             builder.setLazyInit(beanDefinition.isLazyInit());
-            builder.getRawBeanDefinition().setBeanClass(ServiceFactoryBean.class);
+            builder.getRawBeanDefinition().setBeanClass( ServiceFactoryBean.class);
             builder.addPropertyValue(AbstractContractDefinitionParser.INTERFACE_CLASS_PROPERTY,
                 interfaceType);
             builder.addPropertyValue(AbstractContractDefinitionParser.UNIQUE_ID_PROPERTY,

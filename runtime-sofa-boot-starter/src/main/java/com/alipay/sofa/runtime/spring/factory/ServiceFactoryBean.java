@@ -16,6 +16,7 @@
  */
 package com.alipay.sofa.runtime.spring.factory;
 
+import com.alipay.sofa.runtime.SofaRuntimeProperties;
 import com.alipay.sofa.runtime.api.ServiceRuntimeException;
 import com.alipay.sofa.runtime.api.annotation.SofaService;
 import com.alipay.sofa.runtime.model.InterfaceMode;
@@ -51,6 +52,12 @@ public class ServiceFactoryBean extends AbstractContractFactoryBean {
                 "Bean " + beanId + " of type " + ref.getClass()
                         + " has already annotated by @SofaService,"
                         + " can not be registered using xml. Please check it.");
+        }
+
+        if (SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader())) {
+            if (bindings.size() == 0) {
+                return;
+            }
         }
 
         Implementation implementation = new DefaultImplementation();

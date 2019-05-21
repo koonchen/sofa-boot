@@ -54,7 +54,7 @@ public class ServiceFactoryBean extends AbstractContractFactoryBean {
                         + " can not be registered using xml. Please check it.");
         }
 
-        if (SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader())) {
+        if (SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass().getClassLoader())) {
             if (bindings.size() == 0) {
                 return;
             }

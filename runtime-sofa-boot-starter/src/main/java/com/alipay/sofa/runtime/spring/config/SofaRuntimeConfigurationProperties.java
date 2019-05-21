@@ -45,11 +45,11 @@ public class SofaRuntimeConfigurationProperties {
     }
 
     public void setSkipJVMServiceAndRef(boolean skipJVMServiceAndRef) {
-        SofaRuntimeProperties.setSkipJVMServiceAndRef(this.getClass().getClassLoader(),
+        SofaRuntimeProperties.setSkipJvmServiceAndRef(this.getClass().getClassLoader(),
             skipJVMServiceAndRef);
     }
 
     public boolean isSkipJVMServiceAndRef() {
-        return SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader());
+        return SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass().getClassLoader());
     }
 }

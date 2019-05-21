@@ -52,7 +52,7 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
             .isTrue(bindings.size() <= 1,
                 "Found more than one binding in <sofa:reference/>, <sofa:reference/> can only have one binding.");
 
-        if (SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass().getClassLoader())) {
+        if (SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass().getClassLoader())) {
             if (bindings.size() == 0) {
                 proxy = applicationContext.getBean(getInterfaceClass());
                 return;

@@ -28,7 +28,7 @@ public class SofaRuntimeProperties {
 
     private static ConcurrentHashMap<ClassLoader, Boolean> skipJvmReferenceHealthCheckMap = new ConcurrentHashMap<>();
     private static ConcurrentHashMap<ClassLoader, Boolean> disableJvmFirstMap             = new ConcurrentHashMap<>();
-    private static ConcurrentHashMap<ClassLoader, Boolean> skipJVMServiceAndRefMap        = new ConcurrentHashMap<>();
+    private static ConcurrentHashMap<ClassLoader, Boolean> skipJvmServiceAndRefMap        = new ConcurrentHashMap<>();
 
     public static boolean isSkipJvmReferenceHealthCheck(SofaRuntimeContext sofaRuntimeContext) {
         return isSkipJvmReferenceHealthCheck(sofaRuntimeContext.getAppClassLoader());
@@ -56,12 +56,12 @@ public class SofaRuntimeProperties {
         disableJvmFirstMap.putIfAbsent(classLoader, disableJvmFirst);
     }
 
-    public static boolean isSkipJVMServiceAndRef(ClassLoader classLoader) {
-        return disableJvmFirstMap.get(classLoader) != null && disableJvmFirstMap.get(classLoader);
+    public static boolean isSkipJvmServiceAndRef(ClassLoader classLoader) {
+        return skipJvmServiceAndRefMap.get(classLoader) != null && skipJvmServiceAndRefMap.get(classLoader);
     }
 
-    public static void setSkipJVMServiceAndRef(ClassLoader classLoader, boolean skipJVMServiceAndRef) {
-        skipJVMServiceAndRefMap.putIfAbsent(classLoader, skipJVMServiceAndRef);
+    public static void setSkipJvmServiceAndRef(ClassLoader classLoader, boolean skipJVMServiceAndRef) {
+        skipJvmServiceAndRefMap.putIfAbsent(classLoader, skipJVMServiceAndRef);
     }
 
     public static void unRegisterProperties(ClassLoader classLoader) {

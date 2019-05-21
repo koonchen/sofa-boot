@@ -17,6 +17,7 @@
 package com.alipay.sofa.runtime.spring.configuration;
 
 import com.alipay.sofa.runtime.spring.AsyncProxyBeanPostProcessor;
+import com.alipay.sofa.runtime.spring.SofaApplicationEventMulticaster;
 import com.alipay.sofa.runtime.spring.async.AsyncTaskExecutionListener;
 import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
@@ -42,6 +43,12 @@ import com.alipay.sofa.runtime.spring.health.SofaComponentHealthIndicator;
 @Configuration
 @EnableConfigurationProperties(SofaRuntimeConfigurationProperties.class)
 public class SofaRuntimeAutoConfiguration {
+
+    @Bean
+    public SofaApplicationEventMulticaster applicationEventMulticaster() {
+        return new SofaApplicationEventMulticaster();
+    }
+
     @Bean
     public CloseApplicationContextCallBack closeApplicationContextCallBack() {
         return new CloseApplicationContextCallBack();

@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.alipay.sofa</groupId>
         <artifactId>sofaboot-dependencies</artifactId>
-        <version>3.1.4-SNAPSHOT</version>
+        <version>3.1.4.POC-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>

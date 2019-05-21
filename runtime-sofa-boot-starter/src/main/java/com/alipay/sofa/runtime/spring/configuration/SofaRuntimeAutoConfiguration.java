@@ -23,6 +23,7 @@ import org.springframework.boot.actuate.health.HealthIndicator;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,6 +46,7 @@ import com.alipay.sofa.runtime.spring.health.SofaComponentHealthIndicator;
 public class SofaRuntimeAutoConfiguration {
 
     @Bean
+    @ConditionalOnProperty(value = "com.alipay.sofa.boot.async.listener.enable", matchIfMissing = false)
     public SofaApplicationEventMulticaster applicationEventMulticaster() {
         return new SofaApplicationEventMulticaster();
     }

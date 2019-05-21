@@ -44,12 +44,12 @@ public class SofaRuntimeConfigurationProperties {
         return SofaRuntimeProperties.isDisableJvmFirst(this.getClass().getClassLoader());
     }
 
-    public void setSkipJVMServiceAndRef(boolean skipJVMServiceAndRef) {
+    public void setSkipJvmServiceAndRef(boolean skipJvmServiceAndRef) {
         SofaRuntimeProperties.setSkipJvmServiceAndRef(this.getClass().getClassLoader(),
-            skipJVMServiceAndRef);
+                skipJvmServiceAndRef);
     }
 
-    public boolean isSkipJVMServiceAndRef() {
+    public boolean isSkipJvmServiceAndRef() {
         return SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass().getClassLoader());
     }
 }

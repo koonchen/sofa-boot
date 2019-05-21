@@ -26,6 +26,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.SimpleApplicationEventMulticaster;
 import org.springframework.core.ResolvableType;
 import org.springframework.core.env.Environment;
+import org.springframework.core.task.TaskExecutor;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +43,9 @@ public class SofaApplicationEventMulticaster extends SimpleApplicationEventMulti
 
     @Autowired
     private Environment   environment;
+
+    @Autowired(required = false)
+    private TaskExecutor  taskExecutor;
 
     @Override
     public void multicastEvent(ApplicationEvent event, ResolvableType eventType) {
@@ -95,5 +99,14 @@ public class SofaApplicationEventMulticaster extends SimpleApplicationEventMulti
         }
 
         return true;
+    }
+
+    @Override
+    public TaskExecutor getTaskExecutor() {
+        return taskExecutor;
+    }
+
+    public void setTaskExecutor(TaskExecutor taskExecutor) {
+        this.taskExecutor = taskExecutor;
     }
 }

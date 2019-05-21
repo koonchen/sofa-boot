@@ -110,7 +110,7 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
                 Object proxy;
                 if (XmlConstants.BINDING_TYPE.equals(sofaReferenceAnnotation.binding()
                     .bindingType())
-                    && SofaRuntimeProperties.isSkipJVMServiceAndRef(this.getClass()
+                    && SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass()
                         .getClassLoader())) {
                     proxy = applicationContext.getBean(interfaceType);
                 } else {

@@ -57,7 +57,8 @@ public class SofaRuntimeProperties {
     }
 
     public static boolean isSkipJvmServiceAndRef(ClassLoader classLoader) {
-        return skipJvmServiceAndRefMap.get(classLoader) != null && skipJvmServiceAndRefMap.get(classLoader);
+        return skipJvmServiceAndRefMap.get(classLoader) != null
+               && skipJvmServiceAndRefMap.get(classLoader);
     }
 
     public static void setSkipJvmServiceAndRef(ClassLoader classLoader, boolean skipJVMServiceAndRef) {

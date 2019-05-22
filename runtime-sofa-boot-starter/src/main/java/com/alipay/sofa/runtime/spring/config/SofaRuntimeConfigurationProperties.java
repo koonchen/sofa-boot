@@ -46,7 +46,7 @@ public class SofaRuntimeConfigurationProperties {
 
     public void setSkipJvmServiceAndRef(boolean skipJvmServiceAndRef) {
         SofaRuntimeProperties.setSkipJvmServiceAndRef(this.getClass().getClassLoader(),
-                skipJvmServiceAndRef);
+            skipJvmServiceAndRef);
     }
 
     public boolean isSkipJvmServiceAndRef() {

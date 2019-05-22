@@ -20,8 +20,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-import com.alipay.sofa.runtime.SofaRuntimeProperties;
 import com.alipay.sofa.runtime.service.binding.JvmBinding.XmlConstants;
+import com.alipay.sofa.runtime.spring.config.SofaRuntimeConfigurationProperties;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.ApplicationContext;
@@ -53,12 +53,13 @@ import com.alipay.sofa.runtime.spi.service.BindingConverterFactory;
  * @author xuanbei 18/5/9
  */
 public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, PriorityOrdered {
-    private final PlaceHolderBinder binder = new DefaultPlaceHolderBinder();
-    private ApplicationContext      applicationContext;
-    private SofaRuntimeContext      sofaRuntimeContext;
-    private BindingAdapterFactory   bindingAdapterFactory;
-    private BindingConverterFactory bindingConverterFactory;
-    private Environment             environment;
+    private final PlaceHolderBinder            binder = new DefaultPlaceHolderBinder();
+    private ApplicationContext                 applicationContext;
+    private SofaRuntimeContext                 sofaRuntimeContext;
+    private BindingAdapterFactory              bindingAdapterFactory;
+    private BindingConverterFactory            bindingConverterFactory;
+    private Environment                        environment;
+    private SofaRuntimeConfigurationProperties sofaRuntimeConfigurationProperties;
 
     /**
      * To construct a ReferenceAnnotationBeanPostProcessor via a Spring Bean
@@ -110,8 +111,8 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
                 Object proxy;
                 if (XmlConstants.BINDING_TYPE.equals(sofaReferenceAnnotation.binding()
                     .bindingType())
-                    && SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass()
-                        .getClassLoader())) {
+                    && applicationContext.getBean(SofaRuntimeConfigurationProperties.class)
+                        .isSkipJvmServiceAndRef()) {
                     proxy = applicationContext.getBean(interfaceType);
                 } else {
                     proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);
@@ -154,8 +155,8 @@ public class ReferenceAnnotationBeanPostProcessor implements BeanPostProcessor, 
                 Object proxy;
                 if (XmlConstants.BINDING_TYPE.equals(sofaReferenceAnnotation.binding()
                     .bindingType())
-                    && SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass()
-                        .getClassLoader())) {
+                    && applicationContext.getBean(SofaRuntimeConfigurationProperties.class)
+                        .isSkipJvmServiceAndRef()) {
                     proxy = applicationContext.getBean(interfaceType);
                 } else {
                     proxy = createReferenceProxy(sofaReferenceAnnotation, interfaceType);

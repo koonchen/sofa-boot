@@ -16,7 +16,6 @@
  */
 package com.alipay.sofa.runtime.spring.factory;
 
-import com.alipay.sofa.runtime.SofaRuntimeProperties;
 import com.alipay.sofa.runtime.constants.SofaRuntimeFrameworkConstants;
 import com.alipay.sofa.runtime.model.InterfaceMode;
 import com.alipay.sofa.runtime.service.binding.JvmBinding;
@@ -26,6 +25,7 @@ import com.alipay.sofa.runtime.service.component.impl.ReferenceImpl;
 import com.alipay.sofa.runtime.service.helper.ReferenceRegisterHelper;
 import com.alipay.sofa.runtime.spi.binding.BindingAdapterFactory;
 import com.alipay.sofa.runtime.spi.service.BindingConverterContext;
+import com.alipay.sofa.runtime.spring.config.SofaRuntimeConfigurationProperties;
 import org.springframework.util.Assert;
 
 /**
@@ -52,7 +52,10 @@ public class ReferenceFactoryBean extends AbstractContractFactoryBean {
             .isTrue(bindings.size() <= 1,
                 "Found more than one binding in <sofa:reference/>, <sofa:reference/> can only have one binding.");
 
-        if (SofaRuntimeProperties.isSkipJvmServiceAndRef(this.getClass().getClassLoader())) {
+        SofaRuntimeConfigurationProperties sofaRuntimeConfigurationProperties = applicationContext
+            .getBean(SofaRuntimeConfigurationProperties.class);
+
+        if (sofaRuntimeConfigurationProperties.isSkipJvmServiceAndRef()) {
             if (bindings.size() == 0) {
                 proxy = applicationContext.getBean(getInterfaceClass());
                 return;

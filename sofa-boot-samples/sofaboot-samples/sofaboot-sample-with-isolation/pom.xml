@@ -22,7 +22,7 @@
     <parent>
         <artifactId>sofaboot-samples</artifactId>
         <groupId>com.alipay.sofa</groupId>
-        <version>3.2.0-SNAPSHOT</version>
+        <version>3.2.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -81,6 +81,7 @@
             <plugin>
                 <groupId>com.alipay.sofa</groupId>
                 <artifactId>sofa-ark-maven-plugin</artifactId>
+                <version>1.0.0</version>
                 <executions>
                     <execution>
                         <!--goal executed to generate executable-ark-jar -->
